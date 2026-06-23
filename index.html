@@ -1,710 +1,823 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="theme-color" content="#0a0f1e">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="Smart electricity bill calculator for Android. Track energy, estimate costs, save money.">
-    <title>Electricity Bill Calculator</title>
-
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%236366f1'/%3E%3Cpath d='M58 18L34 58H52L46 82L70 42H52Z' fill='white'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%236366f1'/%3E%3Cpath d='M104 32L62 104H94L83 148L125 76H93Z' fill='white'/%3E%3C/svg%3E">
-
-    <style>
-        :root {
-            --primary: #6366f1;
-            --primary-glow: rgba(99,102,241,0.4);
-            --secondary: #10b981;
-            --bg: #0a0f1e;
-            --bg-elevated: #111827;
-            --bg-card: #1a2236;
-            --bg-card-hover: #232d45;
-            --text: #f8fafc;
-            --text-dim: #cbd5e1;
-            --text-muted: #64748b;
-            --border: #1e293b;
-            --border-light: #334155;
-            --radius-sm: 10px;
-            --radius: 14px;
-            --radius-lg: 20px;
-            --shadow: 0 4px 20px rgba(0,0,0,0.4);
-            --shadow-lg: 0 10px 40px rgba(0,0,0,0.5);
-        }
-
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* ===== NAVBAR ===== */
-        .navbar {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 1000;
-            background: rgba(10, 15, 30, 0.85);
-            backdrop-filter: blur(24px) saturate(1.2);
-            -webkit-backdrop-filter: blur(24px) saturate(1.2);
-            border-bottom: 1px solid rgba(30, 41, 59, 0.6);
-        }
-
-        .nav-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.6rem 1rem;
-            height: 52px;
-        }
-
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text);
-            text-decoration: none;
-        }
-
-        .nav-logo .icon {
-            width: 32px; height: 32px;
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
-            border-radius: 9px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem;
-            box-shadow: 0 2px 12px rgba(99,102,241,0.3);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1.25rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.82rem;
-            font-weight: 500;
-            transition: color 0.2s;
-            padding: 0.3rem 0;
-        }
-
-        .nav-links a:hover { color: var(--text-dim); }
-
-        .nav-menu-btn {
-            display: none;
-            background: none; border: none;
-            color: var(--text-dim);
-            font-size: 1.3rem;
-            cursor: pointer;
-            padding: 0.25rem;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* ===== HERO ===== */
-        .hero {
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 5.5rem 1.25rem 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -30%; left: 50%;
-            transform: translateX(-50%);
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            background: rgba(99,102,241,0.1);
-            border: 1px solid rgba(99,102,241,0.2);
-            color: var(--primary);
-            padding: 0.35rem 0.9rem;
-            border-radius: 100px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            margin-bottom: 1.25rem;
-            letter-spacing: 0.03em;
-            text-transform: uppercase;
-        }
-
-        .hero h1 {
-            font-size: clamp(1.9rem, 6.5vw, 3rem);
-            font-weight: 800;
-            line-height: 1.12;
-            margin-bottom: 0.875rem;
-            max-width: 500px;
-            letter-spacing: -0.02em;
-        }
-
-        .hero h1 .accent {
-            background: linear-gradient(135deg, #818cf8, var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-desc {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            max-width: 420px;
-            margin-bottom: 1.75rem;
-            line-height: 1.65;
-        }
-
-        .hero-btns {
-            display: flex;
-            flex-direction: column;
-            gap: 0.625rem;
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
-            padding: 0.8rem 1.25rem;
-            border-radius: var(--radius);
-            font-size: 0.92rem;
-            font-weight: 600;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            -webkit-tap-highlight-color: transparent;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
-            color: white;
-            box-shadow: 0 6px 24px -4px var(--primary-glow);
-        }
-
-        .btn-primary::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-primary:hover::after { left: 100%; }
-        .btn-primary:active { transform: scale(0.96); box-shadow: 0 3px 12px -2px var(--primary-glow); }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-dim);
-            border: 1px solid var(--border-light);
-        }
-
-        .btn-ghost:active { background: var(--bg-card); transform: scale(0.96); }
-
-        /* Phone */
-        .phone-wrap {
-            margin-top: 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .phone {
-            width: 200px; height: 400px;
-            background: var(--bg-card);
-            border-radius: 28px;
-            border: 5px solid #1e293b;
-            box-shadow: var(--shadow-lg), 0 0 50px rgba(99,102,241,0.1);
-            position: relative;
-            overflow: hidden;
-            margin: 0 auto;
-            animation: float 4.5s ease-in-out infinite;
-        }
-
-        .phone::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 50%;
-            transform: translateX(-50%);
-            width: 80px; height: 20px;
-            background: #1e293b;
-            border-radius: 0 0 14px 14px;
-            z-index: 2;
-        }
-
-        .phone-screen {
-            width: 100%; height: 100%;
-            background: linear-gradient(180deg, #141c2e 0%, #0a0f1e 100%);
-            padding: 2.2rem 0.875rem 0.875rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .p-head { text-align: center; color: var(--primary); font-weight: 700; font-size: 0.8rem; }
-        .p-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 0.6rem; }
-        .p-label { color: var(--text-muted); font-size: 0.62rem; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.04em; }
-        .p-input { background: rgba(255,255,255,0.06); border-radius: 5px; height: 28px; }
-        .p-btn { background: linear-gradient(135deg, var(--primary), #4f46e5); height: 30px; border-radius: 6px; margin-top: 0.4rem; }
-        .p-result { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); border-radius: 8px; padding: 0.6rem; text-align: center; color: var(--secondary); font-weight: 700; font-size: 0.8rem; margin-top: auto; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* ===== FEATURES ===== */
-        .features {
-            padding: 3rem 1.25rem;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .sec-head { text-align: center; margin-bottom: 2rem; }
-        .sec-head h2 { font-size: clamp(1.4rem, 5vw, 2rem); font-weight: 800; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
-        .sec-head p { color: var(--text-muted); font-size: 0.9rem; max-width: 420px; margin: 0 auto; line-height: 1.55; }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-        }
-
-        .feat {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.25rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.875rem;
-            transition: all 0.2s ease;
-        }
-
-        .feat:active { background: var(--bg-card-hover); transform: scale(0.985); }
-
-        .feat-icon {
-            width: 42px; height: 42px; min-width: 42px;
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.15rem;
-            box-shadow: 0 3px 12px rgba(99,102,241,0.25);
-        }
-
-        .feat-text h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem; }
-        .feat-text p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.55; }
-
-        /* ===== SCREENSHOTS ===== */
-        .screenshots { padding: 3rem 0; background: var(--bg-elevated); }
-        .screenshots .sec-head { padding: 0 1.25rem; }
-
-        .ss-scroll {
-            display: flex;
-            gap: 0.875rem;
-            overflow-x: auto;
-            padding: 1rem 1.25rem;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .ss-scroll::-webkit-scrollbar { display: none; }
-
-        .ss-item {
-            flex: 0 0 auto;
-            width: 160px; height: 320px;
-            background: var(--bg-card);
-            border-radius: 16px;
-            border: 2px solid var(--border);
-            overflow: hidden;
-            scroll-snap-align: center;
-            box-shadow: var(--shadow);
-            transition: transform 0.2s;
-        }
-
-        .ss-item:active { transform: scale(0.97); }
-
-        .ss-item img { width: 100%; height: 100%; object-fit: cover; }
-        .ss-placeholder {
-            width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-muted); font-size: 0.7rem; text-align: center; padding: 0.75rem;
-        }
-
-        .ss-hint {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.72rem;
-            margin-top: 0.5rem;
-            opacity: 0.5;
-            letter-spacing: 0.05em;
-        }
-
-        /* ===== DOWNLOAD ===== */
-        .download {
-            padding: 3rem 1.25rem;
-            max-width: 520px;
-            margin: 0 auto;
-        }
-
-        .dl-card {
-            background: linear-gradient(180deg, rgba(99,102,241,0.06), rgba(16,185,129,0.03));
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 2rem 1.25rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .dl-card::before {
-            content: '';
-            position: absolute;
-            top: -40%; left: 50%;
-            transform: translateX(-50%);
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .dl-card h2 { font-size: clamp(1.3rem, 4.5vw, 1.7rem); font-weight: 800; margin-bottom: 0.5rem; position: relative; }
-        .dl-card > p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem; line-height: 1.55; position: relative; }
-
-        .dl-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            background: linear-gradient(135deg, var(--primary), #4f46e5);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            font-weight: 700;
-            text-decoration: none;
-            box-shadow: 0 8px 30px -6px var(--primary-glow);
-            transition: all 0.15s ease;
-            -webkit-tap-highlight-color: transparent;
-            width: 100%;
-            max-width: 280px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .dl-btn::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-            transition: left 0.5s;
-        }
-
-        .dl-btn:hover::after { left: 100%; }
-        .dl-btn:active { transform: scale(0.96); box-shadow: 0 4px 16px -4px var(--primary-glow); }
-
-        .dl-btn .dl-icon { font-size: 1.2rem; }
-
-        .dl-meta {
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .dl-meta span {
-            color: var(--text-muted);
-            font-size: 0.72rem;
-            background: var(--bg-card);
-            padding: 0.25rem 0.6rem;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-        }
-
-        /* ===== FOOTER ===== */
-        footer {
-            padding: 1.75rem 1.25rem;
-            text-align: center;
-            border-top: 1px solid var(--border);
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
-        footer a { color: var(--text-dim); text-decoration: none; }
-        footer a:hover { color: var(--text); }
-
-        /* ===== DESKTOP ===== */
-        @media (min-width: 768px) {
-            .nav-inner { padding: 0.6rem 2rem; height: 58px; }
-            .nav-logo { font-size: 1.1rem; }
-            .nav-logo .icon { width: 36px; height: 36px; font-size: 1.1rem; }
-            .nav-links { gap: 2rem; }
-            .nav-links a { font-size: 0.88rem; }
-
-            .hero {
-                flex-direction: row;
-                text-align: left;
-                justify-content: center;
-                padding: 6rem 2rem 4rem;
-                gap: 3rem;
-                max-width: 1100px;
-                margin: 0 auto;
-            }
-
-            .hero h1 { font-size: 3rem; max-width: 480px; }
-            .hero-desc { font-size: 1.05rem; max-width: 400px; }
-            .hero-btns { flex-direction: row; width: auto; max-width: none; }
-            .btn { width: auto; padding: 0.85rem 1.75rem; font-size: 0.9rem; }
-
-            .phone-wrap { margin-top: 0; }
-            .phone { width: 240px; height: 480px; }
-
-            .features { padding: 5rem 2rem; }
-            .features-grid { grid-template-columns: repeat(2, 1fr); gap: 0.875rem; }
-            .feat { padding: 1.5rem; }
-
-            .screenshots { padding: 5rem 0; }
-            .ss-item { width: 200px; height: 400px; }
-
-            .download { padding: 5rem 2rem; }
-            .dl-card { padding: 2.5rem 2rem; }
-            .dl-btn { width: auto; max-width: none; padding: 1rem 2.5rem; }
-        }
-
-        @media (min-width: 1024px) {
-            .hero { gap: 5rem; }
-            .hero h1 { font-size: 3.2rem; }
-            .phone { width: 260px; height: 520px; }
-            .features-grid { grid-template-columns: repeat(3, 1fr); }
-            .ss-item { width: 220px; height: 440px; }
-        }
-
-        /* ===== ANIMATIONS ===== */
-        .reveal {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
-<base target="_blank">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="theme-color" content="#0a0f1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Smart electricity bill calculator for Android. Track energy, estimate costs, save money.">
+  <title>Electricity Bill Calculator</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%236366f1'/%3E%3Cpath d='M58 18L34 58H52L46 82L70 42H52Z' fill='white'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%236366f1'/%3E%3Cpath d='M104 32L62 104H94L83 148L125 76H93Z' fill='white'/%3E%3C/svg%3E">
+
+  <style>
+    /* ----- reset & base ----- */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    :root {
+      --primary: #6366f1;
+      --primary-glow: rgba(99,102,241,0.4);
+      --secondary: #10b981;
+      --bg: #0a0f1e;
+      --bg-elevated: #111827;
+      --bg-card: #1a2236;
+      --bg-card-hover: #232d45;
+      --text: #f8fafc;
+      --text-dim: #cbd5e1;
+      --text-muted: #64748b;
+      --border: #1e293b;
+      --border-light: #334155;
+      --radius-sm: 10px;
+      --radius: 14px;
+      --radius-lg: 20px;
+      --shadow: 0 4px 20px rgba(0,0,0,0.4);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ----- navbar: logo + title centered, nav links below (centered) ----- */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(10, 15, 30, 0.85);
+      backdrop-filter: blur(24px) saturate(1.2);
+      -webkit-backdrop-filter: blur(24px) saturate(1.2);
+      border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.4rem 1rem 0.3rem;
+    }
+
+    /* top row: icon + title centered */
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      width: 100%;
+    }
+    .nav-brand .icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 12px rgba(99,102,241,0.3);
+    }
+    .nav-brand span {
+      letter-spacing: -0.01em;
+    }
+
+    /* second row: nav links centered */
+    .nav-links-row {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      list-style: none;
+      margin-top: 0.25rem;
+      flex-wrap: wrap;
+    }
+    .nav-links-row a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      padding: 0.2rem 0;
+      letter-spacing: 0.01em;
+    }
+    .nav-links-row a:hover { color: var(--text-dim); }
+
+    /* mobile menu toggle (hidden on desktop) */
+    .nav-menu-btn {
+      display: none;
+      background: none; border: none;
+      color: var(--text-dim);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      -webkit-tap-highlight-color: transparent;
+      position: absolute;
+      right: 1rem;
+      top: 0.6rem;
+    }
+
+    /* hide mobile links by default on desktop */
+    .nav-links-row {
+      display: flex;
+    }
+
+    /* ----- hero ----- */
+    .hero {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 6rem 1.25rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -30%; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.2);
+      color: var(--primary);
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(1.9rem, 6.5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.12;
+      margin-bottom: 0.875rem;
+      max-width: 500px;
+      letter-spacing: -0.02em;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(135deg, #818cf8, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 420px;
+      margin-bottom: 1.75rem;
+      line-height: 1.65;
+    }
+    .hero-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 0.625rem;
+      width: 100%;
+      max-width: 300px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.8rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: white;
+      box-shadow: 0 6px 24px -4px var(--primary-glow);
+    }
+    .btn-primary::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.5s;
+    }
+    .btn-primary:hover::after { left: 100%; }
+    .btn-primary:active { transform: scale(0.96); box-shadow: 0 3px 12px -2px var(--primary-glow); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border-light);
+    }
+    .btn-ghost:active { background: var(--bg-card); transform: scale(0.96); }
+
+    .phone-wrap {
+      margin-top: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .phone {
+      width: 200px; height: 400px;
+      background: var(--bg-card);
+      border-radius: 28px;
+      border: 5px solid #1e293b;
+      box-shadow: var(--shadow-lg), 0 0 50px rgba(99,102,241,0.1);
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto;
+      animation: float 4.5s ease-in-out infinite;
+    }
+    .phone::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 20px;
+      background: #1e293b;
+      border-radius: 0 0 14px 14px;
+      z-index: 2;
+    }
+    .phone-screen {
+      width: 100%; height: 100%;
+      background: linear-gradient(180deg, #141c2e 0%, #0a0f1e 100%);
+      padding: 2.2rem 0.875rem 0.875rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .p-head { text-align: center; color: var(--primary); font-weight: 700; font-size: 0.8rem; }
+    .p-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 0.6rem; }
+    .p-label { color: var(--text-muted); font-size: 0.62rem; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .p-input { background: rgba(255,255,255,0.06); border-radius: 5px; height: 28px; }
+    .p-btn { background: linear-gradient(135deg, var(--primary), #4f46e5); height: 30px; border-radius: 6px; margin-top: 0.4rem; }
+    .p-result { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); border-radius: 8px; padding: 0.6rem; text-align: center; color: var(--secondary); font-weight: 700; font-size: 0.8rem; margin-top: auto; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ----- features ----- */
+    .features {
+      padding: 3rem 1.25rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .sec-head { text-align: center; margin-bottom: 2rem; }
+    .sec-head h2 { font-size: clamp(1.4rem, 5vw, 2rem); font-weight: 800; margin-bottom: 0.4rem; letter-spacing: -0.01em; }
+    .sec-head p { color: var(--text-muted); font-size: 0.9rem; max-width: 420px; margin: 0 auto; line-height: 1.55; }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    .feat {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.875rem;
+      transition: all 0.2s ease;
+    }
+    .feat:active { background: var(--bg-card-hover); transform: scale(0.985); }
+    .feat-icon {
+      width: 42px; height: 42px; min-width: 42px;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15rem;
+      box-shadow: 0 3px 12px rgba(99,102,241,0.25);
+    }
+    .feat-text h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem; }
+    .feat-text p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.55; }
+
+    /* ----- screenshots: one by one with slider controls ----- */
+    .screenshots { padding: 3rem 0; background: var(--bg-elevated); }
+    .screenshots .sec-head { padding: 0 1.25rem; }
+
+    .ss-slider-wrap {
+      max-width: 260px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .ss-item {
+      width: 100%;
+      height: 520px;
+      background: var(--bg-card);
+      border-radius: 24px;
+      border: 2px solid var(--border-light);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      box-shadow: var(--shadow);
+    }
+
+    .ss-item .ss-placeholder {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .ss-item .ss-placeholder span {
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+
+    .ss-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      margin-top: 1.2rem;
+    }
+    .ss-nav button {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: var(--bg-card);
+      color: var(--text-dim);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ss-nav button:active {
+      transform: scale(0.92);
+      background: var(--bg-card-hover);
+    }
+    .ss-nav button:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--primary);
+    }
+
+    .ss-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .ss-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border-light);
+      transition: background 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .ss-dots span.active {
+      background: var(--primary);
+      transform: scale(1.2);
+    }
+
+    .ss-hint {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      margin-top: 0.75rem;
+      opacity: 0.5;
+      letter-spacing: 0.05em;
+    }
+
+    /* ----- download ----- */
+    .download {
+      padding: 3rem 1.25rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .dl-card {
+      background: linear-gradient(180deg, rgba(99,102,241,0.06), rgba(16,185,129,0.03));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.25rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .dl-card::before {
+      content: '';
+      position: absolute;
+      top: -40%; left: 50%;
+      transform: translateX(-50%);
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .dl-card h2 { font-size: clamp(1.3rem, 4.5vw, 1.7rem); font-weight: 800; margin-bottom: 0.5rem; position: relative; }
+    .dl-card > p { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.5rem; line-height: 1.55; position: relative; }
+
+    .dl-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 8px 30px -6px var(--primary-glow);
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+      width: 100%;
+      max-width: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+    .dl-btn::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+      transition: left 0.5s;
+    }
+    .dl-btn:hover::after { left: 100%; }
+    .dl-btn:active { transform: scale(0.96); box-shadow: 0 4px 16px -4px var(--primary-glow); }
+    .dl-btn .dl-icon { font-size: 1.2rem; }
+
+    .dl-meta {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .dl-meta span {
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      background: var(--bg-card);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    footer {
+      padding: 1.75rem 1.25rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    footer a { color: var(--text-dim); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ----- responsive ----- */
+    @media (max-width: 767px) {
+      .navbar { padding: 0.4rem 0.5rem 0.3rem; }
+      .nav-brand { font-size: 1rem; }
+      .nav-links-row {
+        display: none;  /* hidden by default on mobile */
+        flex-direction: column;
+        align-items: center;
+        gap: 0.3rem;
+        width: 100%;
+        padding: 0.4rem 0 0.2rem;
+        border-top: 1px solid rgba(30,41,59,0.4);
+        margin-top: 0.3rem;
+      }
+      .nav-links-row.active {
+        display: flex;
+      }
+      .nav-menu-btn {
+        display: block;
+      }
+      .hero { padding: 5.5rem 1.25rem 2rem; }
+      .ss-item { height: 420px; }
+    }
+
+    @media (min-width: 768px) {
+      .navbar { padding: 0.5rem 2rem 0.3rem; }
+      .nav-brand { font-size: 1.2rem; }
+      .nav-links-row { gap: 2.5rem; }
+      .nav-links-row a { font-size: 0.88rem; }
+      .hero {
+        flex-direction: row;
+        text-align: left;
+        justify-content: center;
+        padding: 6rem 2rem 4rem;
+        gap: 3rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .hero h1 { font-size: 3rem; max-width: 480px; }
+      .hero-desc { font-size: 1.05rem; max-width: 400px; }
+      .hero-btns { flex-direction: row; width: auto; max-width: none; }
+      .btn { width: auto; padding: 0.85rem 1.75rem; font-size: 0.9rem; }
+      .phone-wrap { margin-top: 0; }
+      .phone { width: 240px; height: 480px; }
+      .features { padding: 5rem 2rem; }
+      .features-grid { grid-template-columns: repeat(2, 1fr); gap: 0.875rem; }
+      .feat { padding: 1.5rem; }
+      .screenshots { padding: 5rem 0; }
+      .ss-slider-wrap { max-width: 300px; }
+      .ss-item { height: 520px; }
+      .download { padding: 5rem 2rem; }
+      .dl-card { padding: 2.5rem 2rem; }
+      .dl-btn { width: auto; max-width: none; padding: 1rem 2.5rem; }
+    }
+
+    @media (min-width: 1024px) {
+      .hero { gap: 5rem; }
+      .hero h1 { font-size: 3.2rem; }
+      .phone { width: 260px; height: 520px; }
+      .features-grid { grid-template-columns: repeat(3, 1fr); }
+      .ss-slider-wrap { max-width: 340px; }
+      .ss-item { height: 580px; }
+    }
+
+    /* reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+  <base target="_blank">
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="nav-inner">
-            <a href="#" class="nav-logo">
-                <span class="icon">⚡</span>
-                <span>Bill Calculator</span>
-            </a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#features">Features</a></li>
-                <li><a href="#screenshots">Screenshots</a></li>
-                <li><a href="#download">Download</a></li>
-            </ul>
-            <button class="nav-menu-btn" onclick="toggleMenu()" aria-label="Menu">☰</button>
-        </div>
-    </nav>
+  <!-- ===== NAVBAR: icon + title centered, links centered below ===== -->
+  <nav class="navbar">
+    <!-- top row: icon + title -->
+    <a href="#" class="nav-brand" style="text-decoration:none;">
+      <span class="icon">⚡</span>
+      <span>Bill Calculator</span>
+    </a>
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="hero-content reveal">
-            <div class="hero-badge">✨ Free & No Ads</div>
-            <h1>Calculate Your <span class="accent">Electricity Bill</span> in Seconds</h1>
-            <p class="hero-desc">Smart, accurate, and easy-to-use calculator. Track your energy consumption, estimate costs, and save money effortlessly.</p>
-            <div class="hero-btns">
-                <a href="#download" class="btn btn-primary">⬇️ Download APK</a>
-                <a href="#features" class="btn btn-ghost">Explore Features</a>
-            </div>
-        </div>
-        <div class="phone-wrap reveal">
-            <div class="phone">
-                <div class="phone-screen">
-                    <div class="p-head">⚡ Electricity Bill</div>
-                    <div class="p-card">
-                        <div class="p-label">Units (kWh)</div>
-                        <div class="p-input"></div>
-                        <div class="p-label" style="margin-top:0.4rem">Rate / Unit</div>
-                        <div class="p-input"></div>
-                        <div class="p-btn"></div>
-                    </div>
-                    <div class="p-result">Total: $45.60</div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- hamburger for mobile -->
+    <button class="nav-menu-btn" onclick="toggleMenu()" aria-label="Menu">☰</button>
 
-    <!-- Features -->
-    <section class="features" id="features">
-        <div class="sec-head reveal">
-            <h2>Why Choose Our App?</h2>
-            <p>Everything you need to manage and calculate your electricity bills efficiently</p>
-        </div>
-        <div class="features-grid">
-            <div class="feat reveal">
-                <div class="feat-icon">⚡</div>
-                <div class="feat-text">
-                    <h3>Instant Calculation</h3>
-                    <p>Get accurate bill estimates in real-time. Just enter your units and let the app do the math.</p>
-                </div>
-            </div>
-            <div class="feat reveal">
-                <div class="feat-icon">📊</div>
-                <div class="feat-text">
-                    <h3>Usage History</h3>
-                    <p>Track monthly consumption with detailed charts and identify usage patterns over time.</p>
-                </div>
-            </div>
-            <div class="feat reveal">
-                <div class="feat-icon">💰</div>
-                <div class="feat-text">
-                    <h3>Cost Estimation</h3>
-                    <p>Plan ahead with precise cost predictions based on current rates and your habits.</p>
-                </div>
-            </div>
-            <div class="feat reveal">
-                <div class="feat-icon">🎨</div>
-                <div class="feat-text">
-                    <h3>Beautiful UI</h3>
-                    <p>Clean, modern interface with dark mode support for comfortable viewing anytime.</p>
-                </div>
-            </div>
-            <div class="feat reveal">
-                <div class="feat-icon">🔒</div>
-                <div class="feat-text">
-                    <h3>Privacy First</h3>
-                    <p>Your data stays on your device. No internet needed. Completely offline capable.</p>
-                </div>
-            </div>
-            <div class="feat reveal">
-                <div class="feat-icon">📱</div>
-                <div class="feat-text">
-                    <h3>Lightweight</h3>
-                    <p>Optimized for all Android devices. Fast, minimal battery usage, smooth performance.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- second row: nav links (centered) -->
+    <ul class="nav-links-row" id="navLinks">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#screenshots">Screenshots</a></li>
+      <li><a href="#download">Download</a></li>
+    </ul>
+  </nav>
 
-    <!-- Screenshots -->
-    <section class="screenshots" id="screenshots">
-        <div class="sec-head reveal">
-            <h2>App Screenshots</h2>
-            <p>See the app in action</p>
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-content reveal">
+      <div class="hero-badge">✨ Free & No Ads</div>
+      <h1>Calculate Your <span class="accent">Electricity Bill</span> in Seconds</h1>
+      <p class="hero-desc">Smart, accurate, and easy-to-use calculator. Track your energy consumption, estimate costs, and save money effortlessly.</p>
+      <div class="hero-btns">
+        <a href="#download" class="btn btn-primary">⬇️ Download APK</a>
+        <a href="#features" class="btn btn-ghost">Explore Features</a>
+      </div>
+    </div>
+    <div class="phone-wrap reveal">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="p-head">⚡ Electricity Bill</div>
+          <div class="p-card">
+            <div class="p-label">Units (kWh)</div>
+            <div class="p-input"></div>
+            <div class="p-label" style="margin-top:0.4rem">Rate / Unit</div>
+            <div class="p-input"></div>
+            <div class="p-btn"></div>
+          </div>
+          <div class="p-result">Total: $45.60</div>
         </div>
-        <div class="ss-scroll reveal">
-            <div class="ss-item">
-                <div class="ss-placeholder">Screenshot 1<br><br>Replace with<br>your image</div>
-            </div>
-            <div class="ss-item">
-                <div class="ss-placeholder">Screenshot 2<br><br>Replace with<br>your image</div>
-            </div>
-            <div class="ss-item">
-                <div class="ss-placeholder">Screenshot 3<br><br>Replace with<br>your image</div>
-            </div>
-            <div class="ss-item">
-                <div class="ss-placeholder">Screenshot 4<br><br>Replace with<br>your image</div>
-            </div>
-            <div class="ss-item">
-                <div class="ss-placeholder">Screenshot 5<br><br>Replace with<br>your image</div>
-            </div>
-            <div class="ss-item">
-                <div class="ss-placeholder">Screenshot 6<br><br>Replace with<br>your image</div>
-            </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features" id="features">
+    <div class="sec-head reveal">
+      <h2>Why Choose Our App?</h2>
+      <p>Everything you need to manage and calculate your electricity bills efficiently</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat reveal">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-text">
+          <h3>Instant Calculation</h3>
+          <p>Get accurate bill estimates in real-time. Just enter your units and let the app do the math.</p>
         </div>
-        <p class="ss-hint">← SWIPE TO SEE MORE →</p>
-    </section>
-
-    <!-- Download -->
-    <section class="download" id="download">
-        <div class="dl-card reveal">
-            <h2>Ready to Save on Your Bills?</h2>
-            <p>Download now and take control of your electricity expenses. Free forever, no ads, no subscriptions.</p>
-            <a href="https://github.com/Me-Official-Mehedi/Electricity-Bill-Calculator/raw/main/app-release.apk" class="dl-btn" download>
-                <span class="dl-icon">⬇️</span>
-                <span>Download APK</span>
-            </a>
-            <div class="dl-meta">
-                <span>v1.0.0</span>
-                <span>Android 5.0+</span>
-                <span>~15 MB</span>
-            </div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-icon">📊</div>
+        <div class="feat-text">
+          <h3>Usage History</h3>
+          <p>Track monthly consumption with detailed charts and identify usage patterns over time.</p>
         </div>
-    </section>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-icon">💰</div>
+        <div class="feat-text">
+          <h3>Cost Estimation</h3>
+          <p>Plan ahead with precise cost predictions based on current rates and your habits.</p>
+        </div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-icon">🎨</div>
+        <div class="feat-text">
+          <h3>Beautiful UI</h3>
+          <p>Clean, modern interface with dark mode support for comfortable viewing anytime.</p>
+        </div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-icon">🔒</div>
+        <div class="feat-text">
+          <h3>Privacy First</h3>
+          <p>Your data stays on your device. No internet needed. Completely offline capable.</p>
+        </div>
+      </div>
+      <div class="feat reveal">
+        <div class="feat-icon">📱</div>
+        <div class="feat-text">
+          <h3>Lightweight</h3>
+          <p>Optimized for all Android devices. Fast, minimal battery usage, smooth performance.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Footer -->
-    <footer>
-        <p>Made with ❤️ by <a href="https://github.com/Me-Official-Mehedi">Mehedi</a></p>
-        <p style="margin-top:0.25rem; opacity:0.5; font-size:0.75rem;">© 2026 Electricity Bill Calculator</p>
-    </footer>
+  <!-- ===== SCREENSHOTS: one by one with slider controls ===== -->
+  <section class="screenshots" id="screenshots">
+    <div class="sec-head reveal">
+      <h2>App Screenshots</h2>
+      <p>See the app in action — one by one</p>
+    </div>
 
-    <script>
-        function toggleMenu() {
-            document.getElementById('navLinks').classList.toggle('active');
+    <div class="ss-slider-wrap reveal">
+      <div class="ss-item" id="slideDisplay">
+        <div class="ss-placeholder">
+          📱 Screen 1
+          <span>dashboard</span>
+        </div>
+      </div>
+
+      <div class="ss-nav">
+        <button onclick="prevSlide()" aria-label="Previous">❮</button>
+        <button onclick="nextSlide()" aria-label="Next">❯</button>
+      </div>
+
+      <div class="ss-dots" id="dotsContainer"></div>
+      <p class="ss-hint">← tap arrows to navigate →</p>
+    </div>
+  </section>
+
+  <!-- ===== DOWNLOAD ===== -->
+  <section class="download" id="download">
+    <div class="dl-card reveal">
+      <h2>Ready to Save on Your Bills?</h2>
+      <p>Download now and take control of your electricity expenses. Free forever, no ads, no subscriptions.</p>
+      <a href="https://github.com/Me-Official-Mehedi/Electricity-Bill-Calculator/raw/main/app-release.apk" class="dl-btn" download>
+        <span class="dl-icon">⬇️</span>
+        <span>Download APK</span>
+      </a>
+      <div class="dl-meta">
+        <span>v1.0.0</span>
+        <span>Android 5.0+</span>
+        <span>~15 MB</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>Made with ❤️ by <a href="https://github.com/Me-Official-Mehedi">Mehedi</a></p>
+    <p style="margin-top:0.25rem; opacity:0.5; font-size:0.75rem;">© 2026 Electricity Bill Calculator</p>
+  </footer>
+
+  <script>
+    // ----- mobile menu toggle -----
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('active');
+    }
+
+    document.addEventListener('click', function(e) {
+      const nav = document.querySelector('.navbar');
+      const links = document.getElementById('navLinks');
+      if (!nav.contains(e.target) && links.classList.contains('active')) {
+        links.classList.remove('active');
+      }
+    });
+
+    // ----- screenshot slider (one by one) -----
+    const screens = [
+      { label: '📱 Screen 1', sub: 'dashboard' },
+      { label: '📱 Screen 2', sub: 'calculation' },
+      { label: '📱 Screen 3', sub: 'history' },
+      { label: '📱 Screen 4', sub: 'charts' },
+      { label: '📱 Screen 5', sub: 'settings' },
+      { label: '📱 Screen 6', sub: 'profile' }
+    ];
+
+    let currentIndex = 0;
+    const slideEl = document.getElementById('slideDisplay');
+    const dotsContainer = document.getElementById('dotsContainer');
+
+    function renderSlide(index) {
+      const data = screens[index];
+      slideEl.innerHTML = `
+        <div class="ss-placeholder">
+          ${data.label}
+          <span>${data.sub}</span>
+        </div>
+      `;
+      // update dots
+      document.querySelectorAll('.ss-dots span').forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+      });
+    }
+
+    function buildDots() {
+      dotsContainer.innerHTML = '';
+      screens.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.classList.toggle('active', i === 0);
+        dot.addEventListener('click', () => {
+          currentIndex = i;
+          renderSlide(currentIndex);
+        });
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % screens.length;
+      renderSlide(currentIndex);
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + screens.length) % screens.length;
+      renderSlide(currentIndex);
+    }
+
+    // init
+    buildDots();
+    renderSlide(0);
+
+    // keyboard support (optional)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // ----- Intersection Observer for reveal -----
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ----- smooth scroll for anchor links -----
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          document.getElementById('navLinks').classList.remove('active');
         }
-
-        document.addEventListener('click', function(e) {
-            const nav = document.querySelector('.navbar');
-            const links = document.getElementById('navLinks');
-            if (!nav.contains(e.target) && links.classList.contains('active')) {
-                links.classList.remove('active');
-            }
-        });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('visible');
-            });
-        }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    document.getElementById('navLinks').classList.remove('active');
-                }
-            });
-        });
-    </script>
+      });
+    });
+  </script>
 
 </body>
 </html>
