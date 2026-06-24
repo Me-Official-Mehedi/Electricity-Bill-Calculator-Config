@@ -7,17 +7,11 @@
     }
   ],
   "update": {
-    "description": "Fixed minor bugs and updated tariff rates.
-Fixed minor bugs and updated tariff rates.
-Fixed minor bugs and updated tariff rates.
-Fixed minor bugs and updated tariff rates.
-Fixed minor bugs and updated tariff rates.
-Fixed minor bugs and updated tariff rates.
-Fixed minor bugs and updated tariff rates.
-Fixed minor bugs and updated tariff rates.
-Fixed minor bugs and updated tariff rates.
-Fixed minor bugs and updated tariff rates.",
-    "recent_version": "1.1.1",
+    "description": "Fixed minor bugs.
+Updated tariff rates.
+New Update Screen.
+Many More.",
+    "recent_version": "1.1.0",
     "url": "https://electricity-bill-calculator-snowy.vercel.app/"
   }
 }
