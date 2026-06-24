@@ -295,59 +295,113 @@
     .feat-text h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem; }
     .feat-text p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.55; }
 
-    /* ----- screenshots slider ----- */
+    /* ----- screenshots slider - FIXED ----- */
     .screenshots { padding: 3rem 0; background: var(--bg-elevated); }
     .screenshots .sec-head { padding: 0 1.25rem; }
 
-    .ss-slider-wrap { max-width: 260px; margin: 0 auto; position: relative; }
-    .ss-item {
-      width: 100%; height: 520px;
+    .ss-slider-wrap { 
+      max-width: 280px; 
+      margin: 0 auto; 
+      position: relative;
+      padding: 12px;
       background: var(--bg-card);
-      border-radius: 24px;
-      border: 2px solid var(--border-light);
+      border-radius: 32px;
+      border: 3px solid #1e293b;
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Phone notch */
+    .ss-slider-wrap::before {
+      content: '';
+      position: absolute;
+      top: 6px; left: 50%;
+      transform: translateX(-50%);
+      width: 60px; height: 16px;
+      background: #1e293b;
+      border-radius: 0 0 12px 12px;
+      z-index: 10;
+    }
+
+    .ss-item {
+      width: 100%; 
+      height: 560px;
+      background: var(--bg);
+      border-radius: 20px;
       overflow: hidden;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.2s;
-      box-shadow: var(--shadow);
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      position: relative;
     }
+
     .ss-item img {
-      width: 100%; height: 100%;
-      object-fit: cover;
+      width: 100%; 
+      height: 100%;
+      object-fit: contain;
       display: block;
+      background: var(--bg);
     }
+
     .ss-item .ss-placeholder {
-      font-size: 1rem; font-weight: 500; color: var(--text-muted);
-      text-align: center; padding: 1rem;
-      display: flex; flex-direction: column; gap: 0.5rem;
+      font-size: 1rem; 
+      font-weight: 500; 
+      color: var(--text-muted);
+      text-align: center; 
+      padding: 1rem;
+      display: flex; 
+      flex-direction: column; 
+      gap: 0.5rem;
       align-items: center;
     }
     .ss-item .ss-placeholder span { font-size: 0.75rem; opacity: 0.6; }
 
     .ss-nav {
-      display: flex; justify-content: center; gap: 1.2rem;
+      display: flex; 
+      justify-content: center; 
+      gap: 1.2rem;
       margin-top: 1.2rem;
     }
     .ss-nav button {
-      width: 48px; height: 48px; border-radius: 50%;
-      border: none; background: var(--bg-card); color: var(--text-dim);
-      font-size: 1.2rem; cursor: pointer; transition: all 0.15s ease;
-      border: 1px solid var(--border); box-shadow: var(--shadow);
-      display: flex; align-items: center; justify-content: center;
+      width: 48px; 
+      height: 48px; 
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card); 
+      color: var(--text-dim);
+      font-size: 1.2rem; 
+      cursor: pointer; 
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow);
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
     }
     .ss-nav button:active { transform: scale(0.92); background: var(--bg-card-hover); }
     .ss-nav button:hover { background: var(--bg-card-hover); border-color: var(--primary); }
 
     .ss-dots {
-      display: flex; justify-content: center; gap: 0.5rem;
+      display: flex; 
+      justify-content: center; 
+      gap: 0.5rem;
       margin-top: 0.75rem;
     }
     .ss-dots span {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--border-light); transition: background 0.2s, transform 0.2s;
+      width: 8px; 
+      height: 8px; 
+      border-radius: 50%;
+      background: var(--border-light); 
+      transition: background 0.2s, transform 0.2s;
       cursor: pointer;
     }
     .ss-dots span.active { background: var(--primary); transform: scale(1.2); }
-    .ss-hint { text-align: center; color: var(--text-muted); font-size: 0.72rem; margin-top: 0.75rem; opacity: 0.5; letter-spacing: 0.05em; }
+    .ss-hint { 
+      text-align: center; 
+      color: var(--text-muted); 
+      font-size: 0.72rem; 
+      margin-top: 0.75rem; 
+      opacity: 0.5; 
+      letter-spacing: 0.05em; 
+    }
 
     /* ----- stats / counter ----- */
     .stats {
@@ -548,7 +602,7 @@
       .nav-links-row.active { display: flex; }
       .nav-menu-btn { display: block; }
       .hero { padding: 5.5rem 1.25rem 2rem; }
-      .ss-item { height: 420px; }
+      .ss-item { height: 440px; }
       .stats-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
       .stat-item .stat-number { font-size: 1.8rem; }
       .dl-btn { padding: 0.55rem 1.2rem; font-size: 0.8rem; min-width: 130px; }
@@ -563,6 +617,8 @@
       .faq { padding: 3rem 1.25rem; }
       .faq-question { padding: 1rem 1rem 0.4rem; font-size: 0.9rem; }
       .faq-answer { font-size: 0.85rem; }
+      .ss-slider-wrap { max-width: 240px; }
+      .ss-slider-wrap::before { width: 50px; height: 14px; }
     }
 
     @media (min-width: 768px) {
@@ -589,8 +645,8 @@
       .features-grid { grid-template-columns: repeat(2, 1fr); gap: 0.875rem; }
       .feat { padding: 1.5rem; }
       .screenshots { padding: 5rem 0; }
-      .ss-slider-wrap { max-width: 300px; }
-      .ss-item { height: 520px; }
+      .ss-slider-wrap { max-width: 320px; }
+      .ss-item { height: 560px; }
       .stats { padding: 4rem 2rem; }
       .stats-grid { grid-template-columns: repeat(4, 1fr); }
       .testimonials { padding: 4rem 2rem; }
@@ -608,8 +664,8 @@
       .hero h1 { font-size: 3.2rem; }
       .phone { width: 260px; height: 520px; }
       .features-grid { grid-template-columns: repeat(3, 1fr); }
-      .ss-slider-wrap { max-width: 340px; }
-      .ss-item { height: 580px; }
+      .ss-slider-wrap { max-width: 360px; }
+      .ss-item { height: 620px; }
     }
 
     /* reveal animation */
@@ -733,7 +789,7 @@
     </div>
   </section>
 
-  <!-- ===== SCREENSHOTS ===== -->
+  <!-- ===== SCREENSHOTS - Fixed with phone frame ===== -->
   <section class="screenshots" id="screenshots">
     <div class="sec-head reveal">
       <h2>App Screenshots</h2>
@@ -855,11 +911,7 @@
     });
 
     // ============================================================
-    // ===== SCREENSHOT IMAGES - REPLACE WITH YOUR IMAGE URLs =====
-    // ============================================================
-    // Replace the placeholder URLs below with your actual image links.
-    // The images should be in order (screenshot1, screenshot2, etc.)
-    // Supported formats: .jpg, .png, .webp
+    // ===== SCREENSHOT IMAGES - Your actual images from GitHub =====
     // ============================================================
     const screens = [
       { image: 'https://raw.githubusercontent.com/Me-Official-Mehedi/Electricity-Bill-Calculator/refs/heads/main/photo-.jpg', label: 'Main Screen' },
@@ -877,7 +929,7 @@
 
     function renderSlide(index) {
       const data = screens[index];
-      slideEl.innerHTML = `<img src="${data.image}" alt="${data.label}" loading="lazy">`;
+      slideEl.innerHTML = `<img src="${data.image}" alt="${data.label}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'ss-placeholder\\'>📱 ${data.label}<span>Image not found</span></div>'">`;
       document.querySelectorAll('.ss-dots span').forEach((dot, i) => {
         dot.classList.toggle('active', i === index);
       });
