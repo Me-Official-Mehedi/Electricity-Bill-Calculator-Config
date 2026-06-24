@@ -310,6 +310,11 @@
       transition: background 0.2s;
       box-shadow: var(--shadow);
     }
+    .ss-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
     .ss-item .ss-placeholder {
       font-size: 1rem; font-weight: 500; color: var(--text-muted);
       text-align: center; padding: 1rem;
@@ -736,7 +741,7 @@
     </div>
     <div class="ss-slider-wrap reveal">
       <div class="ss-item" id="slideDisplay">
-        <div class="ss-placeholder">📱 Screen 1<span>dashboard</span></div>
+        <!-- Image will be inserted by JavaScript -->
       </div>
       <div class="ss-nav">
         <button onclick="prevSlide()" aria-label="Previous">❮</button>
@@ -777,7 +782,7 @@
     </div>
   </section>
 
-  <!-- ===== FAQ (centered: question top, arrow below) ===== -->
+  <!-- ===== FAQ ===== -->
   <section class="faq" id="faq">
     <div class="sec-head reveal">
       <h2>Frequently Asked Questions</h2>
@@ -813,7 +818,7 @@
     </div>
   </section>
 
-  <!-- ===== DOWNLOAD (compact button, centered) ===== -->
+  <!-- ===== DOWNLOAD ===== -->
   <section class="download" id="download">
     <div class="dl-card reveal">
       <h2>Ready to Save on Your Bills?</h2>
@@ -849,26 +854,35 @@
       }
     });
 
-    // ----- screenshot slider -----
+    // ============================================================
+    // ===== SCREENSHOT IMAGES - REPLACE WITH YOUR IMAGE URLs =====
+    // ============================================================
+    // Replace the placeholder URLs below with your actual image links.
+    // The images should be in order (screenshot1, screenshot2, etc.)
+    // Supported formats: .jpg, .png, .webp
+    // ============================================================
     const screens = [
-      { label: '📱 Screen 1', sub: 'dashboard' },
-      { label: '📱 Screen 2', sub: 'calculation' },
-      { label: '📱 Screen 3', sub: 'history' },
-      { label: '📱 Screen 4', sub: 'charts' },
-      { label: '📱 Screen 5', sub: 'settings' },
-      { label: '📱 Screen 6', sub: 'profile' }
+      { image: 'https://raw.githubusercontent.com/Me-Official-Mehedi/Electricity-Bill-Calculator/refs/heads/main/photo-.jpg', label: 'Main Screen' },
+      { image: 'https://raw.githubusercontent.com/Me-Official-Mehedi/Electricity-Bill-Calculator/refs/heads/main/photo-1.jpg', label: 'About Tariff' },
+      { image: 'https://raw.githubusercontent.com/Me-Official-Mehedi/Electricity-Bill-Calculator/refs/heads/main/photo-2.jpg', label: 'Category' },
+      { image: 'https://raw.githubusercontent.com/Me-Official-Mehedi/Electricity-Bill-Calculator/refs/heads/main/photo-3.jpg', label: 'Tariff Select' },
+      { image: 'https://raw.githubusercontent.com/Me-Official-Mehedi/Electricity-Bill-Calculator/refs/heads/main/photo-4.jpg', label: 'Tariff Select' },
+      { image: 'https://raw.githubusercontent.com/Me-Official-Mehedi/Electricity-Bill-Calculator/refs/heads/main/photo-5.jpg', label: 'Calculation' }
     ];
+
+    // ----- screenshot slider -----
     let currentIndex = 0;
     const slideEl = document.getElementById('slideDisplay');
     const dotsContainer = document.getElementById('dotsContainer');
 
     function renderSlide(index) {
       const data = screens[index];
-      slideEl.innerHTML = `<div class="ss-placeholder">${data.label}<span>${data.sub}</span></div>`;
+      slideEl.innerHTML = `<img src="${data.image}" alt="${data.label}" loading="lazy">`;
       document.querySelectorAll('.ss-dots span').forEach((dot, i) => {
         dot.classList.toggle('active', i === index);
       });
     }
+
     function buildDots() {
       dotsContainer.innerHTML = '';
       screens.forEach((_, i) => {
@@ -878,12 +892,20 @@
         dotsContainer.appendChild(dot);
       });
     }
+
     function nextSlide() { currentIndex = (currentIndex + 1) % screens.length; renderSlide(currentIndex); }
     function prevSlide() { currentIndex = (currentIndex - 1 + screens.length) % screens.length; renderSlide(currentIndex); }
-    buildDots(); renderSlide(0);
-    document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') nextSlide(); if (e.key === 'ArrowLeft') prevSlide(); });
 
-    // ----- FAQ toggle (with arrow below) -----
+    buildDots();
+    renderSlide(0);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // ----- FAQ toggle -----
     function toggleFaq(btn) {
       const answer = btn.nextElementSibling;
       const isOpen = answer.classList.contains('open');
