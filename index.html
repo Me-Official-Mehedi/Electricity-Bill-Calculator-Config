@@ -295,38 +295,48 @@
     .feat-text h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem; }
     .feat-text p { color: var(--text-muted); font-size: 0.82rem; line-height: 1.55; }
 
-    /* ----- screenshots slider - FIXED ----- */
+    /* ----- screenshots slider - WIDER PHONE FRAME ----- */
     .screenshots { padding: 3rem 0; background: var(--bg-elevated); }
     .screenshots .sec-head { padding: 0 1.25rem; }
 
     .ss-slider-wrap { 
-      max-width: 280px; 
+      max-width: 340px; 
       margin: 0 auto; 
       position: relative;
-      padding: 12px;
+      padding: 14px;
       background: var(--bg-card);
-      border-radius: 32px;
+      border-radius: 36px;
       border: 3px solid #1e293b;
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--shadow-lg), 0 0 60px rgba(99,102,241,0.08);
     }
 
     /* Phone notch */
     .ss-slider-wrap::before {
       content: '';
       position: absolute;
-      top: 6px; left: 50%;
+      top: 8px; left: 50%;
       transform: translateX(-50%);
-      width: 60px; height: 16px;
+      width: 70px; height: 18px;
       background: #1e293b;
-      border-radius: 0 0 12px 12px;
+      border-radius: 0 0 14px 14px;
       z-index: 10;
+    }
+
+    /* Side buttons (volume, power) */
+    .ss-slider-wrap::after {
+      content: '';
+      position: absolute;
+      right: -6px; top: 80px;
+      width: 4px; height: 40px;
+      background: #1e293b;
+      border-radius: 0 4px 4px 0;
     }
 
     .ss-item {
       width: 100%; 
-      height: 560px;
+      height: 620px;
       background: var(--bg);
-      border-radius: 20px;
+      border-radius: 22px;
       overflow: hidden;
       display: flex; 
       align-items: center; 
@@ -355,20 +365,21 @@
     }
     .ss-item .ss-placeholder span { font-size: 0.75rem; opacity: 0.6; }
 
+    /* Navigation arrows - BELOW the frame */
     .ss-nav {
       display: flex; 
       justify-content: center; 
       gap: 1.2rem;
-      margin-top: 1.2rem;
+      margin-top: 1.5rem;
     }
     .ss-nav button {
-      width: 48px; 
-      height: 48px; 
+      width: 52px; 
+      height: 52px; 
       border-radius: 50%;
       border: 1px solid var(--border);
       background: var(--bg-card); 
       color: var(--text-dim);
-      font-size: 1.2rem; 
+      font-size: 1.3rem; 
       cursor: pointer; 
       transition: all 0.15s ease;
       box-shadow: var(--shadow);
@@ -382,18 +393,22 @@
     .ss-dots {
       display: flex; 
       justify-content: center; 
-      gap: 0.5rem;
-      margin-top: 0.75rem;
+      gap: 0.6rem;
+      margin-top: 0.85rem;
     }
     .ss-dots span {
-      width: 8px; 
-      height: 8px; 
+      width: 9px; 
+      height: 9px; 
       border-radius: 50%;
       background: var(--border-light); 
-      transition: background 0.2s, transform 0.2s;
+      transition: all 0.2s ease;
       cursor: pointer;
     }
-    .ss-dots span.active { background: var(--primary); transform: scale(1.2); }
+    .ss-dots span.active { 
+      background: var(--primary); 
+      transform: scale(1.25);
+      box-shadow: 0 0 12px rgba(99,102,241,0.4);
+    }
     .ss-hint { 
       text-align: center; 
       color: var(--text-muted); 
@@ -602,7 +617,7 @@
       .nav-links-row.active { display: flex; }
       .nav-menu-btn { display: block; }
       .hero { padding: 5.5rem 1.25rem 2rem; }
-      .ss-item { height: 440px; }
+      .ss-item { height: 480px; }
       .stats-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
       .stat-item .stat-number { font-size: 1.8rem; }
       .dl-btn { padding: 0.55rem 1.2rem; font-size: 0.8rem; min-width: 130px; }
@@ -617,8 +632,11 @@
       .faq { padding: 3rem 1.25rem; }
       .faq-question { padding: 1rem 1rem 0.4rem; font-size: 0.9rem; }
       .faq-answer { font-size: 0.85rem; }
-      .ss-slider-wrap { max-width: 240px; }
-      .ss-slider-wrap::before { width: 50px; height: 14px; }
+      .ss-slider-wrap { max-width: 280px; padding: 10px; border-radius: 28px; }
+      .ss-slider-wrap::before { width: 50px; height: 14px; top: 6px; }
+      .ss-slider-wrap::after { display: none; }
+      .ss-item { height: 440px; border-radius: 18px; }
+      .ss-nav button { width: 44px; height: 44px; font-size: 1.1rem; }
     }
 
     @media (min-width: 768px) {
@@ -645,8 +663,8 @@
       .features-grid { grid-template-columns: repeat(2, 1fr); gap: 0.875rem; }
       .feat { padding: 1.5rem; }
       .screenshots { padding: 5rem 0; }
-      .ss-slider-wrap { max-width: 320px; }
-      .ss-item { height: 560px; }
+      .ss-slider-wrap { max-width: 380px; }
+      .ss-item { height: 640px; }
       .stats { padding: 4rem 2rem; }
       .stats-grid { grid-template-columns: repeat(4, 1fr); }
       .testimonials { padding: 4rem 2rem; }
@@ -664,8 +682,8 @@
       .hero h1 { font-size: 3.2rem; }
       .phone { width: 260px; height: 520px; }
       .features-grid { grid-template-columns: repeat(3, 1fr); }
-      .ss-slider-wrap { max-width: 360px; }
-      .ss-item { height: 620px; }
+      .ss-slider-wrap { max-width: 420px; }
+      .ss-item { height: 700px; }
     }
 
     /* reveal animation */
@@ -789,7 +807,7 @@
     </div>
   </section>
 
-  <!-- ===== SCREENSHOTS - Fixed with phone frame ===== -->
+  <!-- ===== SCREENSHOTS - Wider phone frame, arrows below ===== -->
   <section class="screenshots" id="screenshots">
     <div class="sec-head reveal">
       <h2>App Screenshots</h2>
